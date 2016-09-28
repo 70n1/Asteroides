@@ -10,7 +10,7 @@
     tools:context="com.example.asteroides.MainActivity"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="50dp">
+    android:padding="@dimen/margen_botones">
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,27 +23,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/jugar"
-        android:id="@+id/button"
+        android:id="@+id/button_jugar"
         android:layout_gravity="center_horizontal" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/configurar"
-        android:id="@+id/button2"
+        android:id="@+id/button_configurar"
         android:layout_gravity="center_horizontal" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/acerca_de"
-        android:id="@+id/button3"
-        android:layout_gravity="center_horizontal" />
+        android:id="@+id/button_acerca_de"
+        android:layout_gravity="center_horizontal"
+        android:onClick="lanzarAcercaDe" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/salir"
-        android:id="@+id/button4"
+        android:id="@+id/button_salir"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>

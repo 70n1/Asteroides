@@ -5,4 +5,6 @@
     <string name="configurar">Configurar</string>
     <string name="acerca_de">Acerca de</string>
     <string name="salir">Salir</string>
+    <string name="acerdade">Este programa ha sido desarrollado como ejemplo en el curso de Android para demostrar cómo se pueden lanzar nuevas actividades desde la actividad principal.</string>
+    <string name="acercade_label_activity">Acerca de ...</string>
 </resources>
