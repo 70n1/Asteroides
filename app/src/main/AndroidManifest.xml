@@ -18,6 +18,12 @@
         <activity android:name=".AcercaDeActivity"
             android:label="@string/acercade_label_activity"
             android:theme="@android:style/Theme.Dialog"/>
+
+        <activity android:name=".Preferencias"
+            android:label="Preferencias"
+            />
+
+
     </application>
 
 </manifest>

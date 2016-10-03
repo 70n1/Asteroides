@@ -11,6 +11,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
     private Button bAcercaDe;
     private Button bSalir;
+    private Button bConfigurar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +22,13 @@ public class MainActivity extends AppCompatActivity {
         bAcercaDe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 lanzarAcercaDe(null);
+            }
+        });
+
+        bConfigurar = (Button) findViewById(R.id.button_configurar);
+        bConfigurar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                lanzarPreferencias(null);
             }
         });
 
@@ -42,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            lanzarPreferencias(null);
             return true;
         }
         if (id == R.id.acercaDe) {
@@ -57,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
     }
     public void lanzarAcercaDe(View view) {
         Intent i = new Intent(this, AcercaDeActivity.class);
+        startActivity(i);
+    }
+    public void lanzarPreferencias(View view) {
+        Intent i = new Intent(this, Preferencias.class);
         startActivity(i);
     }
 }
