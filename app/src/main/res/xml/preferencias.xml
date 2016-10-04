@@ -17,4 +17,23 @@
         android:key="fragmentos"
         android:summary="En cuantos trozos se divide un asteroide"
         android:title="Número de Fragmentos" />
+    <PreferenceCategory android:title="Modo multijugador">
+        <CheckBoxPreference
+            android:key="multijugador"
+            android:summary="Jugar contra otros jugadores"
+            android:title="Activar multijugador" />
+        <EditTextPreference
+            android:defaultValue="3"
+            android:key="jugadores_maximos"
+            android:summary="Nº de jugadores máximo"
+            android:title="Máximo de jugadores" />
+        <ListPreference
+            android:defaultValue="Internet"
+            android:entries="@array/tiposConexion"
+            android:entryValues="@array/tiposConexion"
+            android:key="conexion"
+            android:summary="Se escoge el tipo de conexión con el otro jugador"
+            android:title="Tipo de conexión" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

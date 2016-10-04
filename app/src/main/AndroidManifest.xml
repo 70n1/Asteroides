@@ -22,6 +22,9 @@
         <activity android:name=".Preferencias"
             android:label="Preferencias"
             />
+        <activity android:name=".Puntuaciones"
+            android:label="Puntuaciones"
+            />
 
 
     </application>

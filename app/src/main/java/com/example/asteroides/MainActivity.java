@@ -1,17 +1,22 @@
 package com.example.asteroides;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private Button bAcercaDe;
-    private Button bSalir;
+    private Button bJugar;
+    private Button bPuntuaciones;
     private Button bConfigurar;
+    public static AlmacenPuntuaciones almacen = new AlmacenPuntuacionesArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +29,12 @@ public class MainActivity extends AppCompatActivity {
                 lanzarAcercaDe(null);
             }
         });
-
+        bJugar = (Button) findViewById(R.id.button_jugar);
+        bJugar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                mostrarPreferencias(null);
+            }
+        });
         bConfigurar = (Button) findViewById(R.id.button_configurar);
         bConfigurar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -32,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        bSalir = (Button) findViewById(R.id.button_salir);
-        bSalir.setOnClickListener(new View.OnClickListener() {
+        bPuntuaciones = (Button) findViewById(R.id.button_puntuaciones);
+        bPuntuaciones.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                lanzarSalir(null);
+                lanzarPuntuaciones(null);
             }
         });
 
@@ -61,15 +71,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void lanzarSalir (View view){
+    private void lanzarSalir(View view) {
         finish();
     }
+
     public void lanzarAcercaDe(View view) {
         Intent i = new Intent(this, AcercaDeActivity.class);
         startActivity(i);
     }
+
     public void lanzarPreferencias(View view) {
         Intent i = new Intent(this, Preferencias.class);
         startActivity(i);
+    }
+
+    public void lanzarPuntuaciones(View view) {
+        Intent i = new Intent(this, Puntuaciones.class);
+        startActivity(i);
+    }
+
+    public void mostrarPreferencias(View view) {
+        SharedPreferences pref =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        String s = "música: " + pref.getBoolean("musica", true)
+                + ", gráficos: " + pref.getString("graficos", "?")
+                + ", fragmentos: " + pref.getString("fragmentos", "?")
+                + ", multijugador: " + pref.getBoolean("multijugador", false)
+                + ", jugadores_maximos: " + pref.getString("jugadores_maximos", "?")
+                + ", conexion: " + pref.getString("conexion", "?");
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 }
