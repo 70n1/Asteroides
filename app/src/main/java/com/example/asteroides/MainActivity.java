@@ -23,18 +23,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        bAcercaDe = (Button) findViewById(R.id.button_jugar);
+        bAcercaDe.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                lanzarJuego(null);
+            }
+        });
+
         bAcercaDe = (Button) findViewById(R.id.button_acerca_de);
         bAcercaDe.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 lanzarAcercaDe(null);
             }
         });
-        bJugar = (Button) findViewById(R.id.button_jugar);
-        bJugar.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                mostrarPreferencias(null);
-            }
-        });
+
         bConfigurar = (Button) findViewById(R.id.button_configurar);
         bConfigurar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -87,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void lanzarPuntuaciones(View view) {
         Intent i = new Intent(this, Puntuaciones.class);
+        startActivity(i);
+    }
+    public void lanzarJuego(View view) {
+        Intent i = new Intent(this, Juego.class);
         startActivity(i);
     }
 

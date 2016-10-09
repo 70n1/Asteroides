@@ -25,6 +25,9 @@
         <activity android:name=".Puntuaciones"
             android:label="Puntuaciones"
             />
+        <activity android:name=".Juego"
+            android:label="Juego"
+            />
 
 
     </application>
