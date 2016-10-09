@@ -26,7 +26,7 @@
             android:label="Puntuaciones"
             />
         <activity android:name=".Juego"
-            android:label="Juego"
+            android:label="Juego" android:screenOrientation="landscape" android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             />
 
 
