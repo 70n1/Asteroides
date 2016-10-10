@@ -37,9 +37,19 @@ public class VistaJuego extends View {
         super(context, attrs);
         Drawable drawableNave, drawableAsteroide, drawableMisil;
 
-
         //drawableAsteroide = context.getResources().getDrawable(R.drawable.asteroide1);
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        try{
+            numAsteroides = Integer.parseInt(pref.getString("asteroides", String.valueOf(numAsteroides)));
+        }catch(NumberFormatException e){
+            numAsteroides = 5;
+        }
+        try{
+            numFragmentos = Integer.parseInt(pref.getString("fragmentos", String.valueOf(numFragmentos)));
+        }catch(NumberFormatException e){
+            numFragmentos = 3;
+        }
+
         if (pref.getString("graficos", "1").equals("0")) {
 
             setLayerType(View.LAYER_TYPE_SOFTWARE, null);

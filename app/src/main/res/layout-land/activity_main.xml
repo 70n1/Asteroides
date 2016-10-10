@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/asteroides"
-        android:id="@+id/textView"
+        android:id="@+id/tv_titulo"
         android:layout_marginBottom="20dp" />
 
     <TableLayout

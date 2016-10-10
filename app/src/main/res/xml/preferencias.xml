@@ -17,6 +17,11 @@
         android:key="fragmentos"
         android:summary="En cuantos trozos se divide un asteroide"
         android:title="Número de Fragmentos" />
+    <EditTextPreference
+        android:defaultValue="5"
+        android:key="asteroides"
+        android:summary="Número de asteroides en pantalla"
+        android:title="Número de Asteroides" />
     <PreferenceCategory android:title="Modo multijugador">
         <CheckBoxPreference
             android:key="multijugador"

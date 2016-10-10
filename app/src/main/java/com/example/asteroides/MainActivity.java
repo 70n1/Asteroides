@@ -8,7 +8,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bAcercaDe = (Button) findViewById(R.id.button_jugar);
-        bAcercaDe.setOnClickListener(new View.OnClickListener() {
+        bJugar = (Button) findViewById(R.id.button_jugar);
+        bJugar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 lanzarJuego(null);
             }
@@ -51,6 +54,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        TextView texto = (TextView) findViewById(R.id.tv_titulo);
+        Animation animacion = AnimationUtils.loadAnimation(this, R.anim.giro_con_zoom);
+        texto.startAnimation(animacion);
+
+
+        Animation animacion1 = AnimationUtils.loadAnimation(this, R.anim.aparecer);
+        bJugar.startAnimation(animacion1);
+
+        Animation animacion2 = AnimationUtils.loadAnimation(this, R.anim.desplazamiento_derecha);
+        bConfigurar.startAnimation(animacion2);
+
+        Animation animacion3 = AnimationUtils.loadAnimation(this, R.anim.desplazamiento_izquierda);
+        bAcercaDe.startAnimation(animacion3);
+
+        Animation animacion4 = AnimationUtils.loadAnimation(this, R.anim.desplazamiento_arriba);
+        bPuntuaciones.startAnimation(animacion4);
     }
 
     @Override
@@ -91,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, Puntuaciones.class);
         startActivity(i);
     }
+
     public void lanzarJuego(View view) {
         Intent i = new Intent(this, Juego.class);
         startActivity(i);
