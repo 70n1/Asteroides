@@ -16,12 +16,14 @@
         android:defaultValue="3"
         android:key="fragmentos"
         android:summary="En cuantos trozos se divide un asteroide"
-        android:title="Número de Fragmentos" />
+        android:title="Número de Fragmentos"
+        android:inputType="number"/>
     <EditTextPreference
         android:defaultValue="5"
         android:key="asteroides"
         android:summary="Número de asteroides en pantalla"
-        android:title="Número de Asteroides" />
+        android:title="Número de Asteroides"
+        android:inputType="number" />
     <PreferenceCategory android:title="Modo multijugador">
         <CheckBoxPreference
             android:key="multijugador"
@@ -31,7 +33,8 @@
             android:defaultValue="3"
             android:key="jugadores_maximos"
             android:summary="Nº de jugadores máximo"
-            android:title="Máximo de jugadores" />
+            android:title="Máximo de jugadores"
+            android:inputType="number" />
         <ListPreference
             android:defaultValue="Internet"
             android:entries="@array/tiposConexion"
