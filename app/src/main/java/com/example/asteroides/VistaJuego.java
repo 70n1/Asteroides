@@ -11,6 +11,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.View;
 
 import java.util.Vector;
@@ -109,6 +110,32 @@ public class VistaJuego extends View {
             asteroide.setRotacion((int) (Math.random() * 8 - 4));
             asteroides.add(asteroide);
         }
+    }
+    @Override
+    public boolean onKeyDown(int codigoTecla, KeyEvent evento) {
+        super.onKeyDown(codigoTecla, evento);
+// Suponemos que vamos a procesar la pulsación
+        boolean procesada = true;
+        switch (codigoTecla) {
+            case KeyEvent.KEYCODE_DPAD_UP:
+                aceleracionNave = +PASO_ACELERACION_NAVE;
+                break;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+                giroNave = -PASO_GIRO_NAVE;
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                giroNave = +PASO_GIRO_NAVE;
+                break;
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+            case KeyEvent.KEYCODE_ENTER:
+                //activaMisil();
+                break;
+            default:
+// Si estamos aquí, no hay pulsación que nos interese
+                procesada = false;
+                break;
+        }
+        return procesada;
     }
 
     @Override
