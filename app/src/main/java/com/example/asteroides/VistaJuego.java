@@ -12,6 +12,7 @@ import android.graphics.drawable.shapes.PathShape;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.Vector;
@@ -41,6 +42,9 @@ public class VistaJuego extends View {
     private static int PERIODO_PROCESO = 50;
     // Cuando se realizó el último proceso
     private long ultimoProceso = 0;
+
+    private float mX=0, mY=0;
+    private boolean disparo=false;
 
     VistaJuego(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -111,6 +115,39 @@ public class VistaJuego extends View {
             asteroides.add(asteroide);
         }
     }
+
+    @Override
+    public boolean onTouchEvent (MotionEvent event) {
+        super.onTouchEvent(event);
+        float x = event.getX();
+        float y = event.getY();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                disparo=true;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float dx = Math.abs(x - mX);
+                float dy = Math.abs(y - mY);
+                if (dy<6 && dx>6){
+                    giroNave = Math.round((x - mX) / 2);
+                    disparo = false;
+                } else if (dx<6 && dy>6){
+                    if ((mY - y) >0) aceleracionNave = Math.round((mY - y) / 25);
+                    disparo = false;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                giroNave = 0;
+                aceleracionNave = 0;
+                if (disparo){
+                    //activaMisil();
+                }
+                break;
+        }
+        mX=x; mY=y;
+        return true;
+    }
+
     @Override
     public boolean onKeyDown(int codigoTecla, KeyEvent evento) {
         super.onKeyDown(codigoTecla, evento);
@@ -129,6 +166,27 @@ public class VistaJuego extends View {
             case KeyEvent.KEYCODE_DPAD_CENTER:
             case KeyEvent.KEYCODE_ENTER:
                 //activaMisil();
+                break;
+            default:
+// Si estamos aquí, no hay pulsación que nos interese
+                procesada = false;
+                break;
+        }
+        return procesada;
+    }
+
+    @Override
+    public boolean onKeyUp(int codigoTecla, KeyEvent evento) {
+        super.onKeyUp(codigoTecla, evento);
+// Suponemos que vamos a procesar la pulsación
+        boolean procesada = true;
+        switch (codigoTecla) {
+            case KeyEvent.KEYCODE_DPAD_UP:
+                aceleracionNave = 0;
+                break;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                giroNave = 0;
                 break;
             default:
 // Si estamos aquí, no hay pulsación que nos interese
