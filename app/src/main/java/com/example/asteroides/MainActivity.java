@@ -2,6 +2,11 @@ package com.example.asteroides;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.gesture.Gesture;
+import android.gesture.GestureLibraries;
+import android.gesture.GestureLibrary;
+import android.gesture.GestureOverlayView;
+import android.gesture.Prediction;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +19,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements GestureOverlayView.OnGesturePerformedListener {
+    private GestureLibrary libreria;
     private Button bAcercaDe;
     private Button bJugar;
     private Button bPuntuaciones;
@@ -70,6 +78,14 @@ public class MainActivity extends AppCompatActivity {
 
         Animation animacion4 = AnimationUtils.loadAnimation(this, R.anim.desplazamiento_arriba);
         bPuntuaciones.startAnimation(animacion4);
+
+        libreria = GestureLibraries.fromRawResource(this, R.raw.gestures);
+        if (!libreria.load()) {
+            finish();
+        }
+        GestureOverlayView gesturesView =
+                (GestureOverlayView) findViewById(R.id.gestures);
+        gesturesView.addOnGesturePerformedListener(this);
     }
 
     @Override
@@ -126,5 +142,19 @@ public class MainActivity extends AppCompatActivity {
                 + ", jugadores_maximos: " + pref.getString("jugadores_maximos", "?")
                 + ", conexion: " + pref.getString("conexion", "?");
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    }
+    public void onGesturePerformed(GestureOverlayView ov, Gesture gesture) {
+        ArrayList<Prediction> predictions=libreria.recognize(gesture);
+        if (predictions.size()>0) {
+            String comando = predictions.get(0).name;
+            if (comando.equals("play")){
+                lanzarJuego(null); } else if (comando.equals("configurar")){
+                lanzarPreferencias(null);
+            } else if (comando.equals("acerca_de")){
+                lanzarAcercaDe(null);
+            } else if (comando.equals("cancelar")){
+                finish();
+            }
+        }
     }
 }

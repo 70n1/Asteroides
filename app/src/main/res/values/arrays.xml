@@ -15,4 +15,14 @@
         <item>Wi-Fi</item>
         <item>Internet</item>
     </string-array>
+    <string-array name="tiposSensores">
+        <item>Sin sensores</item>
+        <item>Acelerómetro</item>
+        <item>Orientation</item>
+    </string-array>
+    <string-array name="tiposSensoresValores">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 </resources>

@@ -9,19 +9,26 @@ import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
+import android.graphics.drawable.shapes.RectShape;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
+import java.util.List;
 import java.util.Vector;
 
 /**
  * Created by motoni on 09/10/2016.
  */
 
-public class VistaJuego extends View {
+public class VistaJuego extends View implements SensorEventListener {
     // //// ASTEROIDES //////
     private Vector<Grafico> asteroides; // Vector con los Asteroides
     private int numAsteroides = 5; // Número inicial de asteroides
@@ -46,9 +53,28 @@ public class VistaJuego extends View {
     private float mX=0, mY=0;
     private boolean disparo=false;
 
+    // //// MISIL //////
+    private Vector<Grafico> misiles = new Vector<Grafico>();
+    private static int PASO_VELOCIDAD_MISIL = 12;
+    //private boolean misilActivo = false;
+    //private int tiempoMisil;
+    private Vector<Integer> tiempoMisiles = new Vector<Integer>();
+    private Drawable drawableMisil;
+    private int num_misiles = 2;
+
+
+    // //// SENSORES //////
+    private boolean utiliza_sensores=false;
+    private boolean sensor_acelerometro = false;
+    private boolean sensor_orientation = false;
+    private boolean hayValorInicial = false;
+    private float valorInicial;
+    private float valorInicial_x;
+
+
     VistaJuego(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Drawable drawableNave, drawableAsteroide, drawableMisil;
+        Drawable drawableNave, drawableAsteroide;
 
         //drawableAsteroide = context.getResources().getDrawable(R.drawable.asteroide1);
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -61,6 +87,12 @@ public class VistaJuego extends View {
             numFragmentos = Integer.parseInt(pref.getString("fragmentos", String.valueOf(numFragmentos)));
         }catch(NumberFormatException e){
             numFragmentos = 3;
+        }
+
+        try{
+            num_misiles = Integer.parseInt(pref.getString("num_misiles", String.valueOf(num_misiles)));
+        }catch(NumberFormatException e){
+            num_misiles = 1;
         }
 
         if (pref.getString("graficos", "1").equals("0")) {
@@ -97,14 +129,24 @@ public class VistaJuego extends View {
             dAsteroide.setIntrinsicWidth(50);
             dAsteroide.setIntrinsicHeight(50);
             drawableAsteroide = dAsteroide;
+
+            ShapeDrawable dMisil = new ShapeDrawable(new RectShape());
+            dMisil.getPaint().setColor(Color.WHITE);
+            dMisil.getPaint().setStyle(Paint.Style.STROKE);
+            dMisil.setIntrinsicWidth(15);
+            dMisil.setIntrinsicHeight(3);
+            drawableMisil = dMisil;
+
             setBackgroundColor(Color.BLACK);
         } else {
             setLayerType(View.LAYER_TYPE_HARDWARE, null);
             drawableNave = context.getResources().getDrawable(R.drawable.nave);
             drawableAsteroide = context.getResources().getDrawable(R.drawable.asteroide1);
+            drawableMisil = context.getResources().getDrawable(R.drawable.misil1);
         }
 
         nave = new Grafico(this, drawableNave);
+        //misil = new Grafico(this, drawableMisil);
         asteroides = new Vector<Grafico>();
         for (int i = 0; i < numAsteroides; i++) {
             Grafico asteroide = new Grafico(this, drawableAsteroide);
@@ -114,6 +156,32 @@ public class VistaJuego extends View {
             asteroide.setRotacion((int) (Math.random() * 8 - 4));
             asteroides.add(asteroide);
         }
+        utiliza_sensores = false;
+        if (pref.getString("sensores", "1").equals("1")) {
+            utiliza_sensores=true;
+            sensor_acelerometro=true;
+        }
+        if (pref.getString("sensores", "1").equals("2")) {
+            utiliza_sensores=true;
+            sensor_orientation=true;
+        }
+
+        if (utiliza_sensores) {
+            SensorManager mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+            int tipo_sensor  = Sensor.TYPE_ACCELEROMETER;;
+            if (sensor_acelerometro) {
+                tipo_sensor = Sensor.TYPE_ACCELEROMETER;
+            } else {
+                tipo_sensor = Sensor.TYPE_ORIENTATION;
+            }
+            List<Sensor> listSensors = mSensorManager.getSensorList(tipo_sensor);
+            if (!listSensors.isEmpty()) {
+                Sensor orientationSensor = listSensors.get(0);
+                mSensorManager.registerListener(this, orientationSensor,
+                        SensorManager.SENSOR_DELAY_GAME);
+            }
+        }
+
     }
 
     @Override
@@ -126,21 +194,23 @@ public class VistaJuego extends View {
                 disparo=true;
                 break;
             case MotionEvent.ACTION_MOVE:
-                float dx = Math.abs(x - mX);
-                float dy = Math.abs(y - mY);
-                if (dy<6 && dx>6){
-                    giroNave = Math.round((x - mX) / 2);
-                    disparo = false;
-                } else if (dx<6 && dy>6){
-                    if ((mY - y) >0) aceleracionNave = Math.round((mY - y) / 25);
-                    disparo = false;
+                if (!utiliza_sensores) {
+                    float dx = Math.abs(x - mX);
+                    float dy = Math.abs(y - mY);
+                    if (dy < 6 && dx > 6) {
+                        giroNave = Math.round((x - mX) / 2);
+                        disparo = false;
+                    } else if (dx < 6 && dy > 6) {
+                        if ((mY - y) > 0) aceleracionNave = Math.round((mY - y) / 25);
+                        disparo = false;
+                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 giroNave = 0;
                 aceleracionNave = 0;
                 if (disparo){
-                    //activaMisil();
+                    activaMisil();
                 }
                 break;
         }
@@ -165,7 +235,7 @@ public class VistaJuego extends View {
                 break;
             case KeyEvent.KEYCODE_DPAD_CENTER:
             case KeyEvent.KEYCODE_ENTER:
-                //activaMisil();
+                activaMisil();
                 break;
             default:
 // Si estamos aquí, no hay pulsación que nos interese
@@ -212,14 +282,23 @@ public class VistaJuego extends View {
     }
 
     @Override
-    synchronized protected void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        for (Grafico asteroide : asteroides) {
-            asteroide.dibujaGrafico(canvas);
+        synchronized (asteroides) {
+            for (Grafico asteroide : asteroides) {
+                asteroide.dibujaGrafico(canvas);
+            }
         }
         nave.dibujaGrafico(canvas);
+
+        synchronized (misiles) {
+            for (Grafico misil : misiles) {
+                misil.dibujaGrafico(canvas);
+            }
+        }
+        //if (misilActivo) misil.dibujaGrafico(canvas);
     }
-    synchronized protected void actualizaFisica() {
+    protected void actualizaFisica() {
         long ahora = System.currentTimeMillis();
         if (ultimoProceso + PERIODO_PROCESO > ahora) {
             return; // Salir si el período de proceso no se ha cumplido.
@@ -243,6 +322,71 @@ public class VistaJuego extends View {
         for (Grafico asteroide : asteroides) {
             asteroide.incrementaPos(retardo);
         }
+        // Actualizamos posición de misil
+
+
+        synchronized (misiles) {
+            Vector<Integer> borrar_misiles = new Vector<Integer>();
+            for (int i = 0; i < misiles.size(); i++) {
+                misiles.get(i).incrementaPos(retardo);
+                tiempoMisiles.set(i, tiempoMisiles.get(i) - (int) retardo);
+                if (tiempoMisiles.get(i) < 0) {
+                    borrar_misiles.addElement(i);
+                } else {
+                    for (int m = 0; m < asteroides.size(); m++)
+                        if (misiles.get(i).verificaColision(asteroides.elementAt(m))) {
+                            destruyeAsteroide(m);
+                            borrar_misiles.addElement(i);
+                            break;
+                        }
+                }
+            }
+
+            for (int borra_elemento : borrar_misiles) {
+                tiempoMisiles.removeElementAt(borra_elemento);
+                misiles.removeElementAt(borra_elemento);
+            }
+        }
+
+        /*
+        if (misilActivo) {
+            misil.incrementaPos(retardo);
+            tiempoMisil-=retardo;
+            if (tiempoMisil < 0) {
+                misilActivo = false;
+            } else {
+                for (int i = 0; i < asteroides.size(); i++)
+                    if (misil.verificaColision(asteroides.elementAt(i))) {
+                        destruyeAsteroide(i);
+                        break;
+                    }
+            }
+        }
+        */
+    }
+    private void destruyeAsteroide(int i) {
+        synchronized (asteroides) {
+            asteroides.remove(i);
+            //misilActivo = false;
+        }
+    }
+    private void activaMisil() {
+        synchronized (misiles) {
+            if (misiles.size() < num_misiles) {
+                Grafico misil = new Grafico(this, drawableMisil);
+                misil.setCenX(nave.getCenX());
+                misil.setCenY(nave.getCenY());
+                misil.setAngulo(nave.getAngulo());
+                misil.setIncX(Math.cos(Math.toRadians(misil.getAngulo())) * PASO_VELOCIDAD_MISIL);
+                misil.setIncY(Math.sin(Math.toRadians(misil.getAngulo())) * PASO_VELOCIDAD_MISIL);
+
+                misiles.addElement(misil);
+                int tiempoMisil = (int) Math.min(this.getWidth() / Math.abs(misil.getIncX()), this.getHeight() / Math.abs(misil.getIncY())) - 2;
+                //misilActivo = true;
+
+                tiempoMisiles.addElement(tiempoMisil);
+            }
+        }
     }
 
     class ThreadJuego extends Thread {
@@ -252,5 +396,73 @@ public class VistaJuego extends View {
                 actualizaFisica();
             }
         }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+
+
+
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+        if (sensor_orientation) {
+            float valor = event.values[1];
+            //float valor_x = event.values[0];
+            if (!hayValorInicial) {
+                valorInicial = valor;
+                //   valorInicial_x = valor_x;
+                hayValorInicial = true;
+            }
+            giroNave = (int) (valor - valorInicial) / 3;
+        }
+
+        if (sensor_acelerometro){
+            float valor = event.values[1];
+            float valor_x = event.values[0];
+            if (!hayValorInicial) {
+                valorInicial = valor;
+                valorInicial_x = valor_x;
+                hayValorInicial = true;
+            }
+            if ((valorInicial_x- valor_x) > 2){
+                aceleracionNave = +PASO_ACELERACION_NAVE;
+            }  else
+            if ((valor_x- valorInicial_x) > 2){
+                aceleracionNave = -PASO_ACELERACION_NAVE;
+            } ;
+
+            /*
+            if ((valorInicial- valor) > 2){
+                giroNave = -PASO_GIRO_NAVE;
+            }  else
+            if ((valor- valorInicial) > 2){
+                giroNave = +PASO_GIRO_NAVE;
+            } ;
+            */
+
+            if (Math.abs(valorInicial- valor) > 1) {
+                giroNave = Math.round((valor - valorInicial));
+            }
+            if (Math.abs(valorInicial_x- valor_x) > 1) {
+                aceleracionNave = Math.round((valorInicial_x - valor_x)/2);
+            }
+
+            //System.out.println(event.sensor.getName() + " - " + Float.toString(valorInicial_x) + ":" + (String)Float.toString(valor_x) + " - " + Float.toString(valorInicial_x) + ":" + Float.toString(valor));
+        }
+
+
+    /*
+        if ((valorInicial_x- valor_x) > Math.PI/8){
+            aceleracionNave = +PASO_ACELERACION_NAVE;
+        }  else
+        if ((valor_x- valorInicial_x) > Math.PI/8){
+            aceleracionNave = -PASO_ACELERACION_NAVE;
+        } ;
+
+        Toast.makeText(getContext().getApplicationContext(), (String)Float.toString(valor_x), Toast.LENGTH_SHORT).show();
+    */
     }
 }

@@ -1,55 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.gesture.GestureOverlayView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/gestures"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="@dimen/margen_botones">
+    android:fadeOffset="800"
+    android:gestureStrokeType="multiple">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/asteroides"
-        android:id="@+id/tv_titulo"
-        android:layout_marginBottom="20dp" />
-
-    <TableLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:stretchColumns="*">
+        android:orientation="vertical"
+        android:padding="@dimen/margen_botones">
 
-        <TableRow>
+        <TextView
+            android:id="@+id/tv_titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="@string/asteroides"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/jugar"
-                android:id="@+id/button_jugar"/>
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:stretchColumns="*">
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/configurar"
-                android:id="@+id/button_configurar" />
-        </TableRow>
+            <TableRow>
 
-        <TableRow>
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/acerca_de"
-                android:id="@+id/button_acerca_de" />
+                <Button
+                    android:id="@+id/button_jugar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/jugar" />
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/puntuaciones"
-                android:id="@+id/button_puntuaciones"/>
-        </TableRow>
+                <Button
+                    android:id="@+id/button_configurar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/configurar" />
+            </TableRow>
 
-    </TableLayout>
+            <TableRow>
 
+                <Button
+                    android:id="@+id/button_acerca_de"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/acerca_de" />
 
-</LinearLayout>
+                <Button
+                    android:id="@+id/button_puntuaciones"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/puntuaciones" />
+            </TableRow>
+
+        </TableLayout>
+
+    </LinearLayout>
+</android.gesture.GestureOverlayView>
