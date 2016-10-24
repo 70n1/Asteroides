@@ -53,6 +53,7 @@ public class VistaJuego extends View implements SensorEventListener {
     private float mX=0, mY=0;
     private boolean disparo=false;
 
+
     // //// MISIL //////
     private Vector<Grafico> misiles = new Vector<Grafico>();
     private static int PASO_VELOCIDAD_MISIL = 12;
@@ -389,6 +390,11 @@ public class VistaJuego extends View implements SensorEventListener {
         }
     }
 
+    public ThreadJuego getThread() {
+        return thread;
+    }
+
+    /*
     class ThreadJuego extends Thread {
         @Override
         public void run() {
@@ -397,6 +403,39 @@ public class VistaJuego extends View implements SensorEventListener {
             }
         }
     }
+    */
+
+
+    class ThreadJuego extends Thread {
+        private boolean pausa,corriendo;
+        public synchronized void pausar() {
+            pausa = true;
+        }
+        public synchronized void reanudar() {
+            pausa = false;
+            notify();
+        }
+        public void detener() {
+            corriendo = false;
+            if (pausa) reanudar();
+        }
+        @Override
+        public void run() {
+            corriendo = true;
+            while (corriendo) {
+                actualizaFisica();
+                synchronized (this) {
+                    while (pausa) {
+                        try {
+                            wait();
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
