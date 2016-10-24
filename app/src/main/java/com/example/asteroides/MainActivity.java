@@ -79,7 +79,8 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         bAcercaDe.startAnimation(animacion_arriba);
         bPuntuaciones.startAnimation(animacion_arriba);
 
-        /*Animation animacion = AnimationUtils.loadAnimation(this, R.anim.giro_con_zoom);
+        /*
+        Animation animacion = AnimationUtils.loadAnimation(this, R.anim.giro_con_zoom);
         texto.startAnimation(animacion);
 
 
@@ -93,7 +94,8 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         bAcercaDe.startAnimation(animacion3);
 
         Animation animacion4 = AnimationUtils.loadAnimation(this, R.anim.desplazamiento_arriba);
-        bPuntuaciones.startAnimation(animacion4);*/
+        bPuntuaciones.startAnimation(animacion4);
+        */
 
         libreria = GestureLibraries.fromRawResource(this, R.raw.gestures);
         if (!libreria.load()) {
