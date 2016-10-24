@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
@@ -150,7 +151,9 @@ public class VistaJuego extends View implements SensorEventListener {
             setLayerType(View.LAYER_TYPE_HARDWARE, null);
             drawableNave = context.getResources().getDrawable(R.drawable.nave);
             drawableAsteroide = context.getResources().getDrawable(R.drawable.asteroide1);
-            drawableMisil = context.getResources().getDrawable(R.drawable.misil1);
+            //drawableMisil = context.getResources().getDrawable(R.drawable.misil1);
+            drawableMisil = context.getResources().getDrawable(R.drawable.animacion);
+            ((AnimationDrawable)drawableMisil).start();
         }
 
         nave = new Grafico(this, drawableNave);
@@ -388,11 +391,15 @@ public class VistaJuego extends View implements SensorEventListener {
             if (misiles.size() < num_misiles) {
                 soundPool.play(idDisparo, 1, 1, 1, 0, 1);
                 Grafico misil = new Grafico(this, drawableMisil);
+
                 misil.setCenX(nave.getCenX());
                 misil.setCenY(nave.getCenY());
                 misil.setAngulo(nave.getAngulo());
                 misil.setIncX(Math.cos(Math.toRadians(misil.getAngulo())) * PASO_VELOCIDAD_MISIL);
                 misil.setIncY(Math.sin(Math.toRadians(misil.getAngulo())) * PASO_VELOCIDAD_MISIL);
+
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                //if (pref.getString("graficos", "1").equals("1"))  ((AnimationDrawable)misil.getDrawable()).start();
 
                 misiles.addElement(misil);
                 int tiempoMisil = (int) Math.min(this.getWidth() / Math.abs(misil.getIncX()), this.getHeight() / Math.abs(misil.getIncY())) - 2;
