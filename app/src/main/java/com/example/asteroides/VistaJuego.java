@@ -14,6 +14,10 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -72,6 +76,9 @@ public class VistaJuego extends View implements SensorEventListener {
     private float valorInicial;
     private float valorInicial_x;
 
+    // //// MULTIMEDIA //////
+    SoundPool soundPool;
+    int idDisparo, idExplosion;
 
     VistaJuego(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -167,21 +174,25 @@ public class VistaJuego extends View implements SensorEventListener {
             sensor_orientation=true;
         }
 
-        if (utiliza_sensores) {
-            SensorManager mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-            int tipo_sensor  = Sensor.TYPE_ACCELEROMETER;;
-            if (sensor_acelerometro) {
-                tipo_sensor = Sensor.TYPE_ACCELEROMETER;
-            } else {
-                tipo_sensor = Sensor.TYPE_ORIENTATION;
-            }
-            List<Sensor> listSensors = mSensorManager.getSensorList(tipo_sensor);
-            if (!listSensors.isEmpty()) {
-                Sensor orientationSensor = listSensors.get(0);
-                mSensorManager.registerListener(this, orientationSensor,
-                        SensorManager.SENSOR_DELAY_GAME);
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { //if((android.os.Build.VERSION.SDK_INT) == 21){
+
+            AudioAttributes audioAttrib = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+            soundPool = new SoundPool.Builder().setAudioAttributes(audioAttrib).setMaxStreams(5).build();
         }
+        else {
+
+            soundPool = new SoundPool( 5, AudioManager.STREAM_MUSIC , 0);
+        }
+
+        idDisparo = soundPool.load(context, R.raw.disparo, 0);
+        idExplosion = soundPool.load(context, R.raw.explosion, 0);
+
+        /*if (utiliza_sensores) {
+            activarSensores();
+        }*/
 
     }
 
@@ -368,12 +379,14 @@ public class VistaJuego extends View implements SensorEventListener {
     private void destruyeAsteroide(int i) {
         synchronized (asteroides) {
             asteroides.remove(i);
+            soundPool.play(idExplosion, 1, 1, 0, 0, 1);
             //misilActivo = false;
         }
     }
     private void activaMisil() {
         synchronized (misiles) {
             if (misiles.size() < num_misiles) {
+                soundPool.play(idDisparo, 1, 1, 1, 0, 1);
                 Grafico misil = new Grafico(this, drawableMisil);
                 misil.setCenX(nave.getCenX());
                 misil.setCenY(nave.getCenY());
@@ -387,6 +400,32 @@ public class VistaJuego extends View implements SensorEventListener {
 
                 tiempoMisiles.addElement(tiempoMisil);
             }
+        }
+    }
+
+    public void activarSensores(){
+        if (utiliza_sensores) {
+            SensorManager mSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+            int tipo_sensor = Sensor.TYPE_ACCELEROMETER;
+            ;
+            if (sensor_acelerometro) {
+                tipo_sensor = Sensor.TYPE_ACCELEROMETER;
+            } else {
+                tipo_sensor = Sensor.TYPE_ORIENTATION;
+            }
+            List<Sensor> listSensors = mSensorManager.getSensorList(tipo_sensor);
+            if (!listSensors.isEmpty()) {
+                Sensor orientationSensor = listSensors.get(0);
+                mSensorManager.registerListener(this, orientationSensor,
+                        SensorManager.SENSOR_DELAY_GAME);
+            }
+        }
+    }
+
+    public void desactivarSensores(){
+        if (utiliza_sensores) {
+            SensorManager mSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+            mSensorManager.unregisterListener(this);
         }
     }
 

@@ -7,6 +7,7 @@ import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.Prediction;
+import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,7 +28,10 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     private Button bJugar;
     private Button bPuntuaciones;
     private Button bConfigurar;
+
     public static AlmacenPuntuaciones almacen = new AlmacenPuntuacionesArray();
+
+    MediaPlayer mp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +66,20 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
             }
         });
 
+
+        Animation animacion_aparecer = AnimationUtils.loadAnimation(this, R.anim.aparecer);
+
+        Animation animacion_arriba = AnimationUtils.loadAnimation(this, R.anim.desplazamiento_arriba);
+
         TextView texto = (TextView) findViewById(R.id.tv_titulo);
-        Animation animacion = AnimationUtils.loadAnimation(this, R.anim.giro_con_zoom);
+        texto.startAnimation(animacion_aparecer);
+
+        bJugar.startAnimation(animacion_arriba);
+        bConfigurar.startAnimation(animacion_arriba);
+        bAcercaDe.startAnimation(animacion_arriba);
+        bPuntuaciones.startAnimation(animacion_arriba);
+
+        /*Animation animacion = AnimationUtils.loadAnimation(this, R.anim.giro_con_zoom);
         texto.startAnimation(animacion);
 
 
@@ -77,12 +93,16 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         bAcercaDe.startAnimation(animacion3);
 
         Animation animacion4 = AnimationUtils.loadAnimation(this, R.anim.desplazamiento_arriba);
-        bPuntuaciones.startAnimation(animacion4);
+        bPuntuaciones.startAnimation(animacion4);*/
 
         libreria = GestureLibraries.fromRawResource(this, R.raw.gestures);
         if (!libreria.load()) {
             finish();
         }
+
+        mp = MediaPlayer.create(this, R.raw.audio);
+        mp.start();
+
         GestureOverlayView gesturesView =
                 (GestureOverlayView) findViewById(R.id.gestures);
         gesturesView.addOnGesturePerformedListener(this);
@@ -157,4 +177,45 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
             }
         }
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mp.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mp != null && !mp.isPlaying()) mp.start();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle guardarEstado) {
+        super.onSaveInstanceState(guardarEstado);
+        if (mp != null) {
+            int pos = mp.getCurrentPosition();
+            guardarEstado.putInt("posicion", pos);
+        }
+    }
+    @Override
+    protected void onRestoreInstanceState(Bundle recEstado) {
+        super.onRestoreInstanceState(recEstado);
+        if (recEstado!=null && mp!=null) {
+            int pos = recEstado.getInt("posicion");
+            mp.seekTo(pos);
+        }
+    }
+
+  /*@Override
+  protected void onStop() {
+      super.onPause();
+      mp.pause();
+  }
+
+    @Override
+    protected void onStart() {
+        super.onResume();
+        mp.start();
+    }*/
 }
