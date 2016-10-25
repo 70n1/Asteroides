@@ -24,6 +24,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -149,11 +150,25 @@ public class VistaJuego extends View implements SensorEventListener {
             setBackgroundColor(Color.BLACK);
         } else {
             setLayerType(View.LAYER_TYPE_HARDWARE, null);
-            drawableNave = context.getResources().getDrawable(R.drawable.nave);
+
+            ImageView naveAnimada = new ImageView(context); //Creo el image view
+            naveAnimada.setBackgroundResource(R.drawable.animacion_nave); //le asigno la animación
+            drawableNave = naveAnimada.getBackground(); //Asigno al drawable de la nave
+            if (drawableNave instanceof AnimationDrawable) {
+                ((AnimationDrawable) drawableNave).start();
+            }
+            //drawableNave = context.getResources().getDrawable(R.drawable.nave);
             drawableAsteroide = context.getResources().getDrawable(R.drawable.asteroide1);
-            //drawableMisil = context.getResources().getDrawable(R.drawable.misil1);
-            drawableMisil = context.getResources().getDrawable(R.drawable.animacion);
-            ((AnimationDrawable)drawableMisil).start();
+//            drawableMisil = context.getResources().getDrawable(R.drawable.misil1);
+
+            ImageView misilAnimado = new ImageView(context); //Creo el image view
+            misilAnimado.setBackgroundResource(R.drawable.animacion); //le asigno la animación
+            drawableMisil = misilAnimado.getBackground(); //Asigno al drawable de la nave
+            if (drawableMisil instanceof AnimationDrawable) {
+                ((AnimationDrawable) drawableMisil).start();
+            }
+            /*drawableMisil = (AnimationDrawable)context.getResources().getDrawable(R.drawable.animacion);
+            ((AnimationDrawable)drawableMisil).start();*/
         }
 
         nave = new Grafico(this, drawableNave);
@@ -390,7 +405,7 @@ public class VistaJuego extends View implements SensorEventListener {
         synchronized (misiles) {
             if (misiles.size() < num_misiles) {
                 soundPool.play(idDisparo, 1, 1, 1, 0, 1);
-                Grafico misil = new Grafico(this, drawableMisil);
+                final Grafico misil = new Grafico(this, drawableMisil);
 
                 misil.setCenX(nave.getCenX());
                 misil.setCenY(nave.getCenY());
@@ -398,8 +413,15 @@ public class VistaJuego extends View implements SensorEventListener {
                 misil.setIncX(Math.cos(Math.toRadians(misil.getAngulo())) * PASO_VELOCIDAD_MISIL);
                 misil.setIncY(Math.sin(Math.toRadians(misil.getAngulo())) * PASO_VELOCIDAD_MISIL);
 
-                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
-                //if (pref.getString("graficos", "1").equals("1"))  ((AnimationDrawable)misil.getDrawable()).start();
+               /* SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+                if (!pref.getString("graficos", "1").equals("0"))  {
+                    this.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((AnimationDrawable)misil.getDrawable()).start();
+                        }
+                    });
+                }*/
 
                 misiles.addElement(misil);
                 int tiempoMisil = (int) Math.min(this.getWidth() / Math.abs(misil.getIncX()), this.getHeight() / Math.abs(misil.getIncY())) - 2;
