@@ -480,6 +480,7 @@ public class VistaJuego extends View implements SensorEventListener {
             pausa = true;
         }
         public synchronized void reanudar() {
+            ultimoProceso = System.currentTimeMillis();
             pausa = false;
             notify();
         }
