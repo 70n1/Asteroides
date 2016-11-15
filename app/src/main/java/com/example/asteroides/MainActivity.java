@@ -151,7 +151,20 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
     public void lanzarJuego(View view) {
         Intent i = new Intent(this, Juego.class);
-        startActivity(i);
+        startActivityForResult(i, 1234);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1234 && resultCode == RESULT_OK && data != null) {
+            int puntuacion = data.getExtras().getInt("puntuacion");
+            String nombre = "Yo";
+            // Mejor leer nombre desde un AlertDialog.Builder o preferencias
+            almacen.guardarPuntuacion(puntuacion, nombre,
+                    System.currentTimeMillis());
+            lanzarPuntuaciones(null);
+        }
     }
 
     public void mostrarPreferencias(View view) {
@@ -165,16 +178,18 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
                 + ", conexion: " + pref.getString("conexion", "?");
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
+
     public void onGesturePerformed(GestureOverlayView ov, Gesture gesture) {
-        ArrayList<Prediction> predictions=libreria.recognize(gesture);
-        if (predictions.size()>0) {
+        ArrayList<Prediction> predictions = libreria.recognize(gesture);
+        if (predictions.size() > 0) {
             String comando = predictions.get(0).name;
-            if (comando.equals("play")){
-                lanzarJuego(null); } else if (comando.equals("configurar")){
+            if (comando.equals("play")) {
+                lanzarJuego(null);
+            } else if (comando.equals("configurar")) {
                 lanzarPreferencias(null);
-            } else if (comando.equals("acerca_de")){
+            } else if (comando.equals("acerca_de")) {
                 lanzarAcercaDe(null);
-            } else if (comando.equals("cancelar")){
+            } else if (comando.equals("cancelar")) {
                 finish();
             }
         }
@@ -200,10 +215,11 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
             guardarEstado.putInt("posicion", pos);
         }
     }
+
     @Override
     protected void onRestoreInstanceState(Bundle recEstado) {
         super.onRestoreInstanceState(recEstado);
-        if (recEstado!=null && mp!=null) {
+        if (recEstado != null && mp != null) {
             int pos = recEstado.getInt("posicion");
             mp.seekTo(pos);
         }
