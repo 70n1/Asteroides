@@ -108,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         GestureOverlayView gesturesView =
                 (GestureOverlayView) findViewById(R.id.gestures);
         gesturesView.addOnGesturePerformedListener(this);
+
+        almacen = new AlmacenPuntuacionesPreferencias(this);
     }
 
     @Override
