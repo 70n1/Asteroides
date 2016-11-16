@@ -109,7 +109,9 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         gesturesView.addOnGesturePerformedListener(this);
 
         //almacen = new AlmacenPuntuacionesPreferencias(this);
+        //almacen = new AlmacenPuntuacionesFicheroExterno(this);
         almacen = new AlmacenPuntuacionesFicheroInterno(this);
+
 
     }
 
