@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     private Button bConfigurar;
 
     public static AlmacenPuntuaciones almacen = new AlmacenPuntuacionesArray();
-
     MediaPlayer mp;
 
     @Override
@@ -109,7 +108,9 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
                 (GestureOverlayView) findViewById(R.id.gestures);
         gesturesView.addOnGesturePerformedListener(this);
 
-        almacen = new AlmacenPuntuacionesPreferencias(this);
+        //almacen = new AlmacenPuntuacionesPreferencias(this);
+        almacen = new AlmacenPuntuacionesFicheroInterno(this);
+
     }
 
     @Override
