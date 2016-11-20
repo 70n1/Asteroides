@@ -30,6 +30,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -380,6 +382,9 @@ public class VistaJuego extends View implements SensorEventListener {
                 }
             }
 
+            Comparator comparator = Collections.reverseOrder();
+            Collections.sort(borrar_misiles,comparator);
+
             for (int borra_elemento : borrar_misiles) {
                 tiempoMisiles.removeElementAt(borra_elemento);
                 misiles.removeElementAt(borra_elemento);
@@ -454,7 +459,7 @@ public class VistaJuego extends View implements SensorEventListener {
         if (utiliza_sensores) {
             SensorManager mSensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
             int tipo_sensor = Sensor.TYPE_ACCELEROMETER;
-            ;
+
             if (sensor_acelerometro) {
                 tipo_sensor = Sensor.TYPE_ACCELEROMETER;
             } else {
