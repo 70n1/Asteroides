@@ -3,6 +3,7 @@ package com.example.asteroides;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -22,6 +23,11 @@ public class AlmacenPuntuacionesFicheroExterno implements AlmacenPuntuaciones {
     }
     public void guardarPuntuacion(int puntos, String nombre, long fecha){
         try {
+            String stadoSD = Environment.getExternalStorageState();
+            if (!stadoSD.equals(Environment.MEDIA_MOUNTED)) {
+                Toast.makeText(context, "No puedo escribir en la memoria externa", Toast.LENGTH_LONG).show();
+                return;
+            }
             FileOutputStream f = new FileOutputStream(FICHERO, true);
             String texto = puntos + " " + nombre + "\n";
             f.write(texto.getBytes());
@@ -33,6 +39,11 @@ public class AlmacenPuntuacionesFicheroExterno implements AlmacenPuntuaciones {
     public Vector<String> listaPuntuaciones(int cantidad) {
         Vector<String> result = new Vector<String>();
         try {
+            String stadoSD = Environment.getExternalStorageState();
+            if (!stadoSD.equals(Environment.MEDIA_MOUNTED) && !stadoSD.equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
+                Toast.makeText(context, "No puedo leer en la memoria externa", Toast.LENGTH_LONG).show();
+                return result;
+            }
             FileInputStream f = new FileInputStream(FICHERO);
             BufferedReader entrada = new BufferedReader(
                     new InputStreamReader(f));

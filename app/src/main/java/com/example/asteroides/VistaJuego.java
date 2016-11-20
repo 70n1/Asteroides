@@ -92,7 +92,7 @@ public class VistaJuego extends View implements SensorEventListener {
     private int puntuacion = 0;
     private Activity padre;
 
-    VistaJuego(Context context, AttributeSet attrs) {
+   public VistaJuego(Context context, AttributeSet attrs) {
         super(context, attrs);
         Drawable drawableNave, drawableAsteroide;
 

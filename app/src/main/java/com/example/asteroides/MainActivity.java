@@ -1,7 +1,9 @@
 package com.example.asteroides;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
@@ -9,6 +11,8 @@ import android.gesture.GestureOverlayView;
 import android.gesture.Prediction;
 import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,6 +23,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.design.widget.Snackbar;
 
 import java.util.ArrayList;
 
@@ -30,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     private Button bConfigurar;
 
     public static AlmacenPuntuaciones almacen = new AlmacenPuntuacionesArray();
+
+    private static final int SOLICITUD_PERMISO_WRITE_EXTERNAL_STORAGE = 1;
+
     MediaPlayer mp;
 
     @Override
@@ -169,6 +177,65 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
             almacen.guardarPuntuacion(puntuacion, nombre,
                     System.currentTimeMillis());
             lanzarPuntuaciones(null);
+        }
+    }
+
+    public void solicitarPermisoMemoriaExterna() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Snackbar.make(null, "Sin el permiso de acceder a la memoria externa"
+                    + " no puedemos guardar las puntaciones en la memoria externa.", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    SOLICITUD_PERMISO_WRITE_EXTERNAL_STORAGE);
+                        }
+                    })
+                    .show();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    SOLICITUD_PERMISO_WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        if (requestCode == SOLICITUD_PERMISO_WRITE_EXTERNAL_STORAGE) {
+            if (grantResults.length == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                poner_puntaciones_memoria_externa();
+
+            } else {
+                Snackbar.make(null, "Sin el permiso, no puedo guardar las puntaciones en la memoria externa," +
+                        " se guardará el fichero en la memoria interna", Snackbar.LENGTH_SHORT).show();
+                poner_puntaciones_memoria_interna();
+            }
+        }
+    }
+
+    private void poner_puntaciones_memoria_interna() {
+        almacen = new AlmacenPuntuacionesFicheroInterno(this);
+    }
+
+    private void poner_puntaciones_memoria_externa() {
+        almacen = new AlmacenPuntuacionesFicheroInterno(this);
+    }
+
+    private void poner_puntaciones_preferencias() {
+        almacen = new AlmacenPuntuacionesPreferencias(this);
+    }
+
+    private void solicitar_puntaciones_memoria_externa() {
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            poner_puntaciones_memoria_externa();
+        } else {
+            solicitarPermisoMemoriaExterna();
         }
     }
 
