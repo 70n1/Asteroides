@@ -230,6 +230,18 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         almacen = new AlmacenPuntuacionesPreferencias(this);
     }
 
+    private void poner_puntaciones_XML_SAX() {
+        almacen = new AlmacenPuntuacionesXML_SAX(this);
+    }
+
+    private void poner_puntaciones_XML_DOM() {
+        almacen = new AlmacenPuntuacionesXML_DOM(this);
+    }
+
+    private void poner_puntaciones_GSON() {
+        almacen = new AlmacenPuntuacionesGSon();
+    }
+
     private void solicitar_puntaciones_memoria_externa() {
 
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
