@@ -245,6 +245,15 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     private void poner_puntaciones_JSON() {
         almacen = new AlmacenPuntuacionesJSon(this);
     }
+    private void poner_puntaciones_SQLite() {
+        almacen = new AlmacenPuntuacionesSQLite(this);
+    }
+    private void poner_puntaciones_SQLiteRel() {
+        almacen = new AlmacenPuntuacionesSQLiteRel(this);
+    }
+    private void poner_puntaciones_Provider() {
+        almacen = new AlmacenPuntuacionesProvider(this);
+    }
 
     private void solicitar_puntaciones_memoria_externa() {
 
