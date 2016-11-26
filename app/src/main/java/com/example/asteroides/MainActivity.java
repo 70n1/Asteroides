@@ -239,11 +239,11 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     }
 
     private void poner_puntaciones_GSON() {
-        almacen = new AlmacenPuntuacionesGSon();
+        almacen = new AlmacenPuntuacionesGSon(this);
     }
 
     private void poner_puntaciones_JSON() {
-        almacen = new AlmacenPuntuacionesJSon();
+        almacen = new AlmacenPuntuacionesJSon(this);
     }
 
     private void solicitar_puntaciones_memoria_externa() {
