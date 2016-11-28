@@ -118,9 +118,56 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
         //almacen = new AlmacenPuntuacionesPreferencias(this);
         //almacen = new AlmacenPuntuacionesFicheroExterno(this);
-        almacen = new AlmacenPuntuacionesFicheroInterno(this);
+        //almacen = new AlmacenPuntuacionesFicheroInterno(this);
 
+        ponerTipoAlmacenamiento();
+    }
 
+    private void ponerTipoAlmacenamiento() {
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        int tipo_almacenamiento = 0;
+        try {
+            tipo_almacenamiento = Integer.parseInt(pref.getString("almacenamiento", "0"));
+        } catch (NumberFormatException e) {
+            tipo_almacenamiento = 0;
+        }
+
+        switch (tipo_almacenamiento) {
+            case 0: //array
+                poner_puntaciones_array();
+                break;
+            case 1: //preferencias
+                poner_puntaciones_preferencias();
+                break;
+            case 2: //Fichero en memoria interna
+                poner_puntaciones_memoria_interna();
+                break;
+            case 3: //Fichero en memoria externa
+                poner_puntaciones_memoria_externa();
+                break;
+            case 4: //XML SAX
+                poner_puntaciones_XML_SAX();
+                break;
+            case 5: //XML COM
+                poner_puntaciones_XML_DOM();
+                break;
+            case 6: //Fichero GSON (memoria interna)
+                poner_puntaciones_GSON();
+                break;
+            case 7: //Fichero JSON (memoria interna)
+                poner_puntaciones_JSON();
+                break;
+            case 8: //Base de datos 1: SQLite
+                poner_puntaciones_SQLite();
+                break;
+            case 9: //Base de datos 2: SQLite relacional
+                poner_puntaciones_SQLiteRel();
+                break;
+            case 10: //ContentProvider
+                poner_puntaciones_Provider();
+
+        }
     }
 
     @Override
@@ -218,6 +265,9 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         }
     }
 
+    private void poner_puntaciones_array() {
+        almacen = new AlmacenPuntuacionesArray();
+    }
     private void poner_puntaciones_memoria_interna() {
         almacen = new AlmacenPuntuacionesFicheroInterno(this);
     }

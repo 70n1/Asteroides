@@ -8,9 +8,17 @@
 
     <ListPreference
         android:defaultValue="0"
+        android:entries="@array/tiposAlmacenamientos"
+        android:entryValues="@array/tiposAlmacenamientosValores"
+        android:key="sensores"
+        android:summary="Donde se almacenan los datos de las puntuaciones"
+        android:title="Almacenamiento de datos" />
+
+    <ListPreference
+        android:defaultValue="0"
         android:entries="@array/tiposSensores"
         android:entryValues="@array/tiposSensoresValores"
-        android:key="sensores"
+        android:key="almacenamiento"
         android:summary="Utilización de sensores para el movimiento de la nave"
         android:title="Utilización de sensores" />
     <ListPreference

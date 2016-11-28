@@ -25,4 +25,30 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+    <string-array name="tiposAlmacenamientos">
+        <item>Array</item>
+        <item>Preferencias</item>
+        <item>Fichero en memoria interna</item>
+        <item>Fichero en memoria externa</item>
+        <item>XML SAX</item>
+        <item>XML DOM</item>
+        <item>Fichero GSON (memoria interna)</item>
+        <item>Fichero JSON (memoria interna)</item>
+        <item>Base de datos 1: SQLite</item>
+        <item>Base de datos 2: SQLite relacional</item>
+        <item>ContentProvider</item>
+    </string-array>
+    <string-array name="tiposAlmacenamientosValores">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
 </resources>
