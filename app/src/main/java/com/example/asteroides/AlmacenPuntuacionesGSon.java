@@ -31,14 +31,16 @@ public class AlmacenPuntuacionesGSon implements AlmacenPuntuaciones {
 
     public AlmacenPuntuacionesGSon(Context context) {
         this.context = context;
-        guardarPuntuacion(45000, "Mi nombre", System.currentTimeMillis());
-        guardarPuntuacion(31000, "Otro nombre", System.currentTimeMillis());
+        //guardarPuntuacion(45000, "Mi nombre", System.currentTimeMillis());
+        //guardarPuntuacion(31000, "Otro nombre", System.currentTimeMillis());
     }
 
     @Override
     public void guardarPuntuacion(int puntos, String nombre, long fecha) {
         string = cargarFichero();
-        Clase objeto = gson.fromJson(string, type);
+        Clase objeto =  new Clase();
+
+        if (string!="") objeto = gson.fromJson(string, type);
         objeto.puntuaciones.add(new Puntuacion(puntos, nombre, fecha));
         string = gson.toJson(objeto, type);
         /*ArrayList<Puntuacion> puntuaciones = gson.fromJson(string, type);

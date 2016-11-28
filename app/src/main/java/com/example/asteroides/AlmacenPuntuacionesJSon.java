@@ -28,8 +28,8 @@ public class AlmacenPuntuacionesJSon implements AlmacenPuntuaciones {
     //Almacena puntuaciones en formato JSON
     public AlmacenPuntuacionesJSon(Context context) {
         this.context = context;
-        guardarPuntuacion(45000, "Mi nombre", System.currentTimeMillis());
-        guardarPuntuacion(31000, "Otro nombre", System.currentTimeMillis());
+        //guardarPuntuacion(45000, "Mi nombre", System.currentTimeMillis());
+        //guardarPuntuacion(31000, "Otro nombre", System.currentTimeMillis());
     }
 
     @Override

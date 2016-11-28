@@ -351,6 +351,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     @Override
     protected void onResume() {
         super.onResume();
+        ponerTipoAlmacenamiento();
         if (mp != null && !mp.isPlaying()) mp.start();
     }
 
