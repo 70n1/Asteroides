@@ -30,6 +30,8 @@
         <item>Preferencias</item>
         <item>Fichero en memoria interna</item>
         <item>Fichero en memoria externa</item>
+        <item>Recursos RAW</item>
+        <item>Recursos ASSETS</item>
         <item>XML SAX</item>
         <item>XML DOM</item>
         <item>Fichero GSON (memoria interna)</item>
@@ -37,6 +39,7 @@
         <item>Base de datos 1: SQLite</item>
         <item>Base de datos 2: SQLite relacional</item>
         <item>ContentProvider</item>
+        <item>Acceso a través de Sockets</item>
         <item>Servicio web PHP</item>
         <item>Servicio web PHP en servidor propio</item>
         <item>Servicio web PHP con AsyncTask</item>
@@ -46,6 +49,8 @@
         <item>1</item>
         <item>2</item>
         <item>3</item>
+        <item>15</item>
+        <item>16</item>
         <item>4</item>
         <item>5</item>
         <item>6</item>
@@ -53,6 +58,7 @@
         <item>8</item>
         <item>9</item>
         <item>10</item>
+        <item>14</item>
         <item>11</item>
         <item>12</item>
         <item>13</item>

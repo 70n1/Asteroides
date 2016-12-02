@@ -183,6 +183,16 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
                 break;
             case 13: //Servidor PHP con AsyncTask
                 poner_puntaciones_PHP_AsyncTask();
+                break;
+            case 14: //Sockets
+                poner_puntaciones_Socket();
+                break;
+            case 15: //Ficheros de recursos res/arw
+                poner_puntaciones_resraw();
+                break;
+            case 16: //Ficheros de recursos assets
+                poner_puntaciones_assets();
+                break;
 
         }
     }
@@ -324,6 +334,9 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     private void poner_puntaciones_Provider() {
         almacen = new AlmacenPuntuacionesProvider(this);
     }
+    private void poner_puntaciones_Socket() {
+        almacen = new AlmacenPuntuacionesSocket();
+    }
     private void poner_puntaciones_PHP() {
         almacen = new AlmacenPuntuacionesSW_PHP();
     }
@@ -332,6 +345,14 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     }
     private void poner_puntaciones_PHP_AsyncTask() {
         almacen = new AlmacenPuntuacionesSW_PHP_AsyncTask(this);
+    }
+
+    private void poner_puntaciones_resraw() {
+        almacen = new AlmacenPuntuacionesRecursoRaw(this);
+    }
+
+    private void poner_puntaciones_assets() {
+        almacen = new AlmacenPuntuacionesRecursoAssets(this);
     }
 
     private void solicitar_puntaciones_memoria_externa() {

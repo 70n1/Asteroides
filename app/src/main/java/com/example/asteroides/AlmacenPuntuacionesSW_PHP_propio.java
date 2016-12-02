@@ -19,7 +19,7 @@ public class AlmacenPuntuacionesSW_PHP_propio implements AlmacenPuntuaciones {
     public Vector<String> listaPuntuaciones(int cantidad) {
         Vector<String> result = new Vector<String>();
         try {
-            URL url = new URL("http://158.42.146.127/puntuaciones/lista.php" + "?max=20");
+            URL url = new URL("http://www.tiramillas.es/puntuaciones/lista.php" + "?max=20");
             HttpURLConnection conexion = (HttpURLConnection) url.openConnection();
             if (conexion.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(conexion.getInputStream()));
