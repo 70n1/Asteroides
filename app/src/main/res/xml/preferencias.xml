@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="preferencias_principal">
+    <EditTextPreference
+        android:defaultValue="Luke SkyWalker"
+        android:key="nombre"
+        android:summary="Nombre del jugador"
+        android:title="Nombre del jugador" />
+
     <CheckBoxPreference
         android:key="musica"
         android:summary="Se reproduce música de fondo"

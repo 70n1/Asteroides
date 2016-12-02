@@ -10,6 +10,7 @@ import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.Prediction;
 import android.media.MediaPlayer;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -44,6 +45,9 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //para poder acceder a Internet desde el hilo principal:
+        StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder(). permitNetwork().build());
 
         bJugar = (Button) findViewById(R.id.button_jugar);
         bJugar.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +114,11 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         }
 
         mp = MediaPlayer.create(this, R.raw.audio);
-        mp.start();
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        if (pref.getBoolean("musica", false)) {
+            mp.start();
+        }
 
         GestureOverlayView gesturesView =
                 (GestureOverlayView) findViewById(R.id.gestures);
@@ -166,6 +174,15 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
                 break;
             case 10: //ContentProvider
                 poner_puntaciones_Provider();
+                break;
+            case 11: //Servidor PHP
+                poner_puntaciones_PHP();
+                break;
+            case 12: //Servidor PHP propio
+                poner_puntaciones_PHP_propio();
+                break;
+            case 13: //Servidor PHP con AsyncTask
+                poner_puntaciones_PHP_AsyncTask();
 
         }
     }
@@ -219,7 +236,10 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1234 && resultCode == RESULT_OK && data != null) {
             int puntuacion = data.getExtras().getInt("puntuacion");
-            String nombre = "Yo";
+
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+
+            String nombre = pref.getString("nombre", "Yo");
             // Mejor leer nombre desde un AlertDialog.Builder o preferencias
             almacen.guardarPuntuacion(puntuacion, nombre,
                     System.currentTimeMillis());
@@ -304,6 +324,15 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     private void poner_puntaciones_Provider() {
         almacen = new AlmacenPuntuacionesProvider(this);
     }
+    private void poner_puntaciones_PHP() {
+        almacen = new AlmacenPuntuacionesSW_PHP();
+    }
+    private void poner_puntaciones_PHP_propio() {
+        almacen = new AlmacenPuntuacionesSW_PHP_propio();
+    }
+    private void poner_puntaciones_PHP_AsyncTask() {
+        almacen = new AlmacenPuntuacionesSW_PHP_AsyncTask(this);
+    }
 
     private void solicitar_puntaciones_memoria_externa() {
 
@@ -317,7 +346,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     public void mostrarPreferencias(View view) {
         SharedPreferences pref =
                 PreferenceManager.getDefaultSharedPreferences(this);
-        String s = "música: " + pref.getBoolean("musica", true)
+        String s = "música: " + pref.getBoolean("musica", false)
                 + ", gráficos: " + pref.getString("graficos", "?")
                 + ", fragmentos: " + pref.getString("fragmentos", "?")
                 + ", multijugador: " + pref.getBoolean("multijugador", false)
@@ -345,20 +374,49 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     @Override
     protected void onPause() {
         super.onPause();
-        mp.pause();
+
+        if (mp != null && mp.isPlaying()) mp.pause();
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        if (pref.getBoolean("musica", false)) {
+            mp.start();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         ponerTipoAlmacenamiento();
-        if (mp != null && !mp.isPlaying()) mp.start();
+        if (mp != null) {
+            if (!mp.isPlaying()) {
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+                if (pref.getBoolean("musica", false)) {
+                    mp.start();
+                }
+            } else {
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+                if (pref.getBoolean("musica", false)) {
+                    mp.start();
+                } else {
+                    mp.stop();
+                }
+            }
+
+
+        } else {
+
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+            if (pref.getBoolean("musica", false)) {
+                mp = MediaPlayer.create(this, R.raw.audio);
+                mp.start();
+            }
+        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle guardarEstado) {
         super.onSaveInstanceState(guardarEstado);
-        if (mp != null) {
+        if (mp != null && !mp.isPlaying()) {
             int pos = mp.getCurrentPosition();
             guardarEstado.putInt("posicion", pos);
         }
@@ -368,8 +426,13 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     protected void onRestoreInstanceState(Bundle recEstado) {
         super.onRestoreInstanceState(recEstado);
         if (recEstado != null && mp != null) {
-            int pos = recEstado.getInt("posicion");
-            mp.seekTo(pos);
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+            if (pref.getBoolean("musica", false)) {
+                int pos = recEstado.getInt("posicion");
+                mp.seekTo(pos);
+            } else {
+                if (mp.isPlaying()) mp.stop();
+            }
         }
     }
 

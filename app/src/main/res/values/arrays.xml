@@ -37,6 +37,9 @@
         <item>Base de datos 1: SQLite</item>
         <item>Base de datos 2: SQLite relacional</item>
         <item>ContentProvider</item>
+        <item>Servicio web PHP</item>
+        <item>Servicio web PHP en servidor propio</item>
+        <item>Servicio web PHP con AsyncTask</item>
     </string-array>
     <string-array name="tiposAlmacenamientosValores">
         <item>0</item>
@@ -50,5 +53,8 @@
         <item>8</item>
         <item>9</item>
         <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
     </string-array>
 </resources>
